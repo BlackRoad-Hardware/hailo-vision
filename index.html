@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hailo Vision — Edge AI at 52 TOPS | BlackRoad Hardware</title>
+<meta name="description" content="Computer vision on 2x Hailo-8 accelerators. Object detection, face recognition, video analytics — all on-device. No cloud needed. Real-time inference at 26 TOPS per chip.">
+<meta name="keywords" content="edge AI, Hailo-8, computer vision, object detection, face recognition, video analytics, TOPS, BlackRoad">
+<meta property="og:title" content="Hailo Vision — Edge AI at 52 TOPS">
+<meta property="og:description" content="Computer vision at the edge. 52 TOPS across 2 Hailo-8 accelerators. No cloud required.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+  :root{
+    --gradient:linear-gradient(90deg,#FF6B2B,#FF2255,#CC00AA,#8844FF,#4488FF,#00D4FF);
+    --bg:#000;--surface:#0a0a0a;--card-border:#1a1a1a;
+    --text-primary:#fff;--text-secondary:#a0a0a0;--text-muted:#666;
+    --font-heading:'Space Grotesk',sans-serif;--font-mono:'JetBrains Mono',monospace;
+  }
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--text-primary);font-family:var(--font-heading);line-height:1.6;overflow-x:hidden}
+  .gradient-line{height:3px;background:var(--gradient);width:100%}
+  nav{position:fixed;top:3px;left:0;right:0;z-index:1000;background:rgba(0,0,0,.92);border-bottom:1px solid var(--card-border);padding:1rem 2rem;display:flex;justify-content:space-between;align-items:center}
+  .nav-brand{display:flex;align-items:center;gap:.75rem;text-decoration:none}
+  .nav-logo{width:36px;height:36px;background:var(--gradient);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:1.1rem;color:#000}
+  .nav-title{font-size:1.25rem;font-weight:600;color:var(--text-primary)}
+  .nav-links{display:flex;gap:2rem;align-items:center}
+  .nav-links a{color:var(--text-secondary);text-decoration:none;font-size:.9rem;transition:color .2s}
+  .nav-links a:hover{color:var(--text-primary)}
+  .nav-cta{background:var(--gradient)!important;color:#000!important;padding:.5rem 1.25rem;border-radius:6px;font-weight:600!important}
+
+  .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:8rem 2rem 4rem;position:relative}
+  .hero-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,34,85,.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,34,85,.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+  .hero-badge{display:inline-flex;align-items:center;gap:.5rem;padding:.4rem 1rem;border:1px solid var(--card-border);border-radius:100px;font-size:.8rem;color:var(--text-secondary);margin-bottom:2rem;font-family:var(--font-mono)}
+  .hero-badge-dot{width:8px;height:8px;background:#FF2255;border-radius:50%;animation:pulse 2s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  .hero h1{font-size:clamp(3rem,7vw,6rem);font-weight:700;line-height:1.05;margin-bottom:1.5rem;letter-spacing:-.03em}
+  .gt{background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .hero p{font-size:1.25rem;color:var(--text-secondary);max-width:640px;margin:0 auto 2.5rem;line-height:1.7}
+  .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center}
+  .btn-primary{background:var(--gradient);color:#000;padding:.85rem 2rem;border:none;border-radius:8px;font-size:1rem;font-weight:600;cursor:pointer;text-decoration:none;font-family:var(--font-heading);transition:transform .2s,box-shadow .2s}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 30px rgba(255,34,85,.3)}
+  .btn-secondary{background:transparent;color:var(--text-primary);padding:.85rem 2rem;border:1px solid var(--card-border);border-radius:8px;font-size:1rem;font-weight:500;cursor:pointer;text-decoration:none;transition:border-color .2s}
+  .btn-secondary:hover{border-color:#444}
+
+  .stats-bar{display:flex;justify-content:center;gap:4rem;margin-top:5rem;padding-top:3rem;border-top:1px solid var(--card-border);flex-wrap:wrap}
+  .stat-item{text-align:center}
+  .stat-value{font-size:2.5rem;font-weight:700;font-family:var(--font-mono);background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .stat-label{font-size:.85rem;color:var(--text-muted);margin-top:.25rem}
+
+  section{padding:6rem 2rem}
+  .container{max-width:1200px;margin:0 auto}
+  .section-header{text-align:center;max-width:700px;margin:0 auto 4rem}
+  .section-header h2{font-size:2.75rem;font-weight:700;margin-bottom:1rem;letter-spacing:-.02em}
+  .section-header p{color:var(--text-secondary);font-size:1.1rem;line-height:1.7}
+
+  .features-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:1.5rem}
+  .feature-card{background:var(--surface);border:1px solid var(--card-border);border-radius:12px;padding:2rem;transition:border-color .3s}
+  .feature-card:hover{border-color:#333}
+  .feature-icon{width:48px;height:48px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.5rem;margin-bottom:1.25rem;background:linear-gradient(135deg,rgba(255,34,85,.15),rgba(0,212,255,.15));border:1px solid var(--card-border)}
+  .feature-card h3{font-size:1.2rem;font-weight:600;margin-bottom:.75rem}
+  .feature-card p{color:var(--text-secondary);font-size:.95rem;line-height:1.65}
+
+  /* Hardware specs */
+  .hw-section{background:var(--surface);border-top:1px solid var(--card-border);border-bottom:1px solid var(--card-border)}
+  .hw-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+  .hw-specs{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .hw-spec{background:var(--bg);border:1px solid var(--card-border);border-radius:10px;padding:1.5rem;text-align:center}
+  .hw-spec-value{font-size:1.75rem;font-weight:700;font-family:var(--font-mono);background:var(--gradient);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .hw-spec-label{font-size:.8rem;color:var(--text-muted);margin-top:.25rem}
+
+  /* Architecture */
+  .arch-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+  .arch-card{background:var(--surface);border:1px solid var(--card-border);border-radius:12px;padding:2rem;text-align:center}
+  .arch-card h3{font-size:1.1rem;font-weight:600;margin-bottom:.5rem}
+  .arch-card p{color:var(--text-secondary);font-size:.85rem;line-height:1.6}
+  .arch-label{font-family:var(--font-mono);font-size:.75rem;color:var(--text-muted);display:block;margin-bottom:.75rem}
+
+  /* Use cases */
+  .usecases-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem}
+  .uc-card{background:var(--surface);border:1px solid var(--card-border);border-radius:12px;padding:2rem;transition:border-color .3s;position:relative;overflow:hidden}
+  .uc-card:hover{border-color:#333}
+  .uc-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--gradient);opacity:0;transition:opacity .3s}
+  .uc-card:hover::before{opacity:1}
+  .uc-emoji{font-size:2rem;display:block;margin-bottom:1rem}
+  .uc-card h3{font-size:1.1rem;font-weight:600;margin-bottom:.5rem}
+  .uc-card p{color:var(--text-secondary);font-size:.9rem;line-height:1.6}
+
+  /* Models table */
+  .models-table{width:100%;border-collapse:collapse;max-width:900px;margin:0 auto}
+  .models-table th,.models-table td{padding:1rem 1.5rem;text-align:left;border-bottom:1px solid var(--card-border);font-size:.9rem}
+  .models-table th{color:var(--text-muted);font-weight:500;font-family:var(--font-mono);font-size:.8rem;text-transform:uppercase;letter-spacing:.05em}
+  .models-table td{color:var(--text-secondary)}
+  .models-table tr:last-child td{border-bottom:none}
+  .models-table .perf{color:#00D4FF;font-family:var(--font-mono);font-weight:600}
+
+  /* Deployment */
+  .deploy-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1.5rem}
+  .deploy-card{background:var(--surface);border:1px solid var(--card-border);border-radius:12px;padding:2rem}
+  .deploy-card h3{font-size:1.1rem;font-weight:600;margin-bottom:.5rem}
+  .deploy-card p{color:var(--text-secondary);font-size:.9rem;line-height:1.6;margin-bottom:1rem}
+  .deploy-tag{display:inline-block;padding:.2rem .6rem;background:rgba(255,255,255,.05);border:1px solid var(--card-border);border-radius:4px;font-size:.75rem;font-family:var(--font-mono);color:var(--text-muted);margin-right:.3rem}
+
+  /* Code block */
+  .code-block{background:#0d0d0d;border:1px solid var(--card-border);border-radius:12px;overflow:hidden}
+  .code-header{display:flex;align-items:center;gap:.5rem;padding:.75rem 1.25rem;border-bottom:1px solid var(--card-border);background:rgba(255,255,255,.02)}
+  .code-dot{width:10px;height:10px;border-radius:50%;background:#333}
+  .code-dot:nth-child(1){background:#ff5f57}.code-dot:nth-child(2){background:#ffbd2e}.code-dot:nth-child(3){background:#28c840}
+  .code-body{padding:1.5rem;font-family:var(--font-mono);font-size:.85rem;line-height:1.8;color:var(--text-secondary);overflow-x:auto}
+  .ck{color:#CC00AA}.cf{color:#4488FF}.cs{color:#00D4FF}.cc{color:#444}.cn{color:#FF6B2B}.ct{color:#FF2255}
+
+  /* CTA */
+  .cta-section{padding:8rem 2rem;text-align:center;position:relative}
+  .cta-section::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(circle,rgba(255,34,85,.08) 0%,transparent 70%);pointer-events:none}
+  .cta-section h2{font-size:3rem;font-weight:700;margin-bottom:1.25rem;letter-spacing:-.02em}
+  .cta-section p{color:var(--text-secondary);font-size:1.15rem;max-width:550px;margin:0 auto 2.5rem;line-height:1.7}
+
+  footer{border-top:1px solid var(--card-border);padding:4rem 2rem 2rem}
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;max-width:1200px;margin:0 auto}
+  .footer-brand p{color:var(--text-muted);font-size:.85rem;line-height:1.6;margin-top:1rem}
+  .footer-col h4{font-size:.8rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em;margin-bottom:1rem}
+  .footer-col a{display:block;color:var(--text-secondary);text-decoration:none;font-size:.9rem;margin-bottom:.5rem;transition:color .2s}
+  .footer-col a:hover{color:var(--text-primary)}
+  .footer-bottom{max-width:1200px;margin:3rem auto 0;padding-top:2rem;border-top:1px solid var(--card-border);display:flex;justify-content:space-between;align-items:center;color:var(--text-muted);font-size:.8rem;font-family:var(--font-mono)}
+
+  @media(max-width:768px){
+    .hw-grid,.deploy-grid{grid-template-columns:1fr}
+    .arch-grid{grid-template-columns:1fr}
+    .footer-grid{grid-template-columns:1fr 1fr}
+    .nav-links{display:none}
+    .stats-bar{gap:2rem}
+    .hw-specs{grid-template-columns:1fr}
+  }
+  @keyframes fadeInUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+  .animate-in{animation:fadeInUp .6s ease-out forwards}
+  .delay-1{animation-delay:.1s}.delay-2{animation-delay:.2s}.delay-3{animation-delay:.3s}
+  ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:#222;border-radius:3px}
+</style>
+</head>
+<body>
+<div class="gradient-line"></div>
+<nav>
+  <a href="#" class="nav-brand"><div class="nav-logo">HV</div><span class="nav-title">Hailo Vision</span></a>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#hardware">Hardware</a>
+    <a href="#usecases">Use Cases</a>
+    <a href="#models">Models</a>
+    <a href="https://github.com/BlackRoad-Hardware/hailo-vision">GitHub</a>
+    <a href="#cta" class="nav-cta">Get Started</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-badge"><div class="hero-badge-dot"></div><span>BlackRoad Hardware</span></div>
+  <h1 class="animate-in">Edge AI at<br><span class="gt">52 TOPS</span></h1>
+  <p class="animate-in delay-1">
+    Computer vision powered by 2x Hailo-8 AI accelerators on Cecilia and Octavia.
+    Object detection, face recognition, video analytics — all on-device. No cloud.
+    No latency. No data leaving your premises. Real-time inference at the edge.
+  </p>
+  <div class="hero-actions animate-in delay-2">
+    <a href="#cta" class="btn-primary">Deploy Vision Pipeline</a>
+    <a href="#features" class="btn-secondary">Explore Capabilities</a>
+  </div>
+  <div class="stats-bar animate-in delay-3">
+    <div class="stat-item"><div class="stat-value">52</div><div class="stat-label">TOPS Total Compute</div></div>
+    <div class="stat-item"><div class="stat-value">2</div><div class="stat-label">Hailo-8 Accelerators</div></div>
+    <div class="stat-item"><div class="stat-value">30</div><div class="stat-label">FPS Real-Time Detection</div></div>
+    <div class="stat-item"><div class="stat-value">0ms</div><div class="stat-label">Cloud Latency</div></div>
+  </div>
+</section>
+
+<section id="features" class="container">
+  <div class="section-header">
+    <h2>Vision at the <span class="gt">Edge</span></h2>
+    <p>Hailo Vision turns your Pi fleet into a powerful computer vision platform.
+    No GPU servers. No cloud APIs. Just dedicated AI silicon doing what it does best.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">&#128065;</div>
+      <h3>Object Detection</h3>
+      <p>YOLOv8 and SSD models running at 30 FPS on Hailo-8. Detect and classify 80+ object
+      categories in real-time video streams. Custom model training for domain-specific objects.
+      Batch processing for offline video analysis.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128100;</div>
+      <h3>Face Recognition</h3>
+      <p>ArcFace and RetinaFace models for face detection and recognition. Build and manage
+      face databases locally. No biometric data ever leaves your device. Configurable
+      matching thresholds for security vs. convenience trade-offs.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#127909;</div>
+      <h3>Video Analytics</h3>
+      <p>Multi-camera stream processing with object tracking across frames. Heatmaps,
+      people counting, dwell time analysis, path tracking. All computed on the Hailo-8
+      without sending a single frame to any server.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128274;</div>
+      <h3>Privacy-First Design</h3>
+      <p>All inference happens on-device. Video frames are processed and discarded — never
+      stored unless explicitly configured. Audit logs track every detection event.
+      GDPR-ready by architecture, not by policy.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128268;</div>
+      <h3>Model Pipeline</h3>
+      <p>Chain multiple models in sequence: detect, crop, classify, act. Pre-processing
+      (resize, normalize) and post-processing (NMS, filtering) built into the pipeline.
+      Hot-swap models without restarting the pipeline.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">&#128225;</div>
+      <h3>Event-Driven Actions</h3>
+      <p>Trigger webhooks, MQTT messages, or RoadFlow workflows based on detection events.
+      "When person detected in zone A after 10pm, alert security and record 30s clip."
+      Complex event logic with temporal conditions.</p>
+    </div>
+  </div>
+</section>
+
+<section id="hardware" class="hw-section" style="padding:6rem 2rem;">
+  <div class="container">
+    <div class="hw-grid">
+      <div>
+        <h2 style="font-size:2.5rem;font-weight:700;margin-bottom:1.25rem;">
+          Purpose-Built<br><span class="gt">Hardware</span>
+        </h2>
+        <p style="color:var(--text-secondary);font-size:1.05rem;line-height:1.7;margin-bottom:1.5rem;">
+          The Hailo-8 is a dedicated AI processor designed from the ground up for edge inference.
+          Unlike GPU-based solutions that waste power on general compute, the Hailo-8 dataflow
+          architecture delivers maximum TOPS per watt.
+        </p>
+        <p style="color:var(--text-secondary);font-size:1.05rem;line-height:1.7;margin-bottom:1.5rem;">
+          Two Hailo-8 chips in the BlackRoad fleet — one on Cecilia, one on Octavia — provide
+          a combined 52 TOPS of AI compute. That's enough to run multiple YOLOv8 models
+          simultaneously across dozens of camera feeds.
+        </p>
+        <p style="color:var(--text-secondary);font-size:1.05rem;line-height:1.7;">
+          The M.2 form factor means these chips integrate directly into any Raspberry Pi 5
+          with the AI HAT+. No external GPUs, no power-hungry servers, no noise.
+        </p>
+      </div>
+      <div class="hw-specs">
+        <div class="hw-spec"><div class="hw-spec-value">26</div><div class="hw-spec-label">TOPS per Chip</div></div>
+        <div class="hw-spec"><div class="hw-spec-value">2.5W</div><div class="hw-spec-label">Power per Chip</div></div>
+        <div class="hw-spec"><div class="hw-spec-value">M.2</div><div class="hw-spec-label">Form Factor</div></div>
+        <div class="hw-spec"><div class="hw-spec-value">INT8</div><div class="hw-spec-label">Precision</div></div>
+        <div class="hw-spec"><div class="hw-spec-value">PCIe</div><div class="hw-spec-label">Interface</div></div>
+        <div class="hw-spec"><div class="hw-spec-value">-40/+85</div><div class="hw-spec-label">Temp Range (C)</div></div>
+        <div class="hw-spec"><div class="hw-spec-value">2</div><div class="hw-spec-label">Chips in Fleet</div></div>
+        <div class="hw-spec"><div class="hw-spec-value">52</div><div class="hw-spec-label">Combined TOPS</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="container">
+  <div class="section-header">
+    <h2>Processing <span class="gt">Pipeline</span></h2>
+    <p>From camera frame to actionable event in under 33 milliseconds.</p>
+  </div>
+  <div class="arch-grid">
+    <div class="arch-card">
+      <span class="arch-label">01 — CAPTURE</span>
+      <h3>Video Input</h3>
+      <p>RTSP, USB, CSI camera streams. Multi-camera multiplexing. Configurable resolution and frame rate. Hardware-accelerated decode via V4L2.</p>
+    </div>
+    <div class="arch-card">
+      <span class="arch-label">02 — PROCESS</span>
+      <h3>Hailo Inference</h3>
+      <p>Frame sent to Hailo-8 via PCIe. Model executes on dedicated silicon. Pre/post-processing on CPU. Multiple models can share the accelerator.</p>
+    </div>
+    <div class="arch-card">
+      <span class="arch-label">03 — ACT</span>
+      <h3>Event Dispatch</h3>
+      <p>Detection results trigger events via MQTT, webhooks, or RoadFlow. Metadata logged to SQLite/PostgreSQL. Annotated frames optionally saved or streamed.</p>
+    </div>
+  </div>
+</section>
+
+<section id="usecases" class="container">
+  <div class="section-header">
+    <h2>Use <span class="gt">Cases</span></h2>
+    <p>From home security to industrial quality control, Hailo Vision adapts to any computer vision need.</p>
+  </div>
+  <div class="usecases-grid">
+    <div class="uc-card">
+      <span class="uc-emoji">&#128247;</span>
+      <h3>Security Cameras</h3>
+      <p>Person and vehicle detection with tracking. Zone intrusion alerts. License plate recognition. Night vision with IR camera support. All processed locally — no cloud subscription fees.</p>
+    </div>
+    <div class="uc-card">
+      <span class="uc-emoji">&#128230;</span>
+      <h3>Inventory Tracking</h3>
+      <p>Count items on shelves in real-time. Detect when stock is low. Track inventory movement through a facility. Barcode and QR code reading at high speed.</p>
+    </div>
+    <div class="uc-card">
+      <span class="uc-emoji">&#128736;</span>
+      <h3>Quality Control</h3>
+      <p>Defect detection on manufacturing lines. Surface inspection at 30 FPS. Dimensional measurement with calibrated cameras. Automatic reject and sorting triggers.</p>
+    </div>
+    <div class="uc-card">
+      <span class="uc-emoji">&#129520;</span>
+      <h3>Agriculture</h3>
+      <p>Crop health monitoring from camera feeds. Pest detection and identification. Fruit counting and ripeness assessment. Irrigation zone optimization based on visual data.</p>
+    </div>
+    <div class="uc-card">
+      <span class="uc-emoji">&#128656;</span>
+      <h3>Traffic Analysis</h3>
+      <p>Vehicle counting and classification. Speed estimation. Traffic flow heatmaps. Incident detection (wrong-way driver, stopped vehicle). Pedestrian safety monitoring.</p>
+    </div>
+    <div class="uc-card">
+      <span class="uc-emoji">&#127973;</span>
+      <h3>Retail Analytics</h3>
+      <p>Customer foot traffic counting. Dwell time analysis at displays. Queue length monitoring. Demographic estimation (age range, gender) — all without storing faces.</p>
+    </div>
+  </div>
+</section>
+
+<section id="models" class="container">
+  <div class="section-header">
+    <h2>Supported <span class="gt">Models</span></h2>
+    <p>Pre-compiled and optimized models ready to deploy. Or bring your own trained model.</p>
+  </div>
+  <table class="models-table">
+    <thead>
+      <tr><th>Model</th><th>Task</th><th>Input Size</th><th>FPS on Hailo-8</th><th>mAP</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>YOLOv8n</td><td>Object Detection</td><td>640x640</td><td class="perf">45 FPS</td><td>37.3</td></tr>
+      <tr><td>YOLOv8s</td><td>Object Detection</td><td>640x640</td><td class="perf">30 FPS</td><td>44.9</td></tr>
+      <tr><td>YOLOv8m</td><td>Object Detection</td><td>640x640</td><td class="perf">18 FPS</td><td>50.2</td></tr>
+      <tr><td>SSD MobileNet v2</td><td>Object Detection</td><td>300x300</td><td class="perf">60 FPS</td><td>22.0</td></tr>
+      <tr><td>RetinaFace</td><td>Face Detection</td><td>640x640</td><td class="perf">40 FPS</td><td>91.4</td></tr>
+      <tr><td>ArcFace</td><td>Face Recognition</td><td>112x112</td><td class="perf">120 FPS</td><td>99.5</td></tr>
+      <tr><td>DeepSORT</td><td>Object Tracking</td><td>128x256</td><td class="perf">50 FPS</td><td>—</td></tr>
+      <tr><td>PoseNet</td><td>Pose Estimation</td><td>256x192</td><td class="perf">35 FPS</td><td>—</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section class="container">
+  <div class="section-header">
+    <h2>Deploy <span class="gt">Anywhere</span></h2>
+    <p>From a single camera setup to multi-site distributed vision networks.</p>
+  </div>
+  <div class="deploy-grid">
+    <div class="deploy-card">
+      <h3>Single Node</h3>
+      <p>One Raspberry Pi 5 + Hailo-8 AI HAT+. Process up to 4 camera streams simultaneously.
+      Perfect for home security, small retail, or lab monitoring.</p>
+      <span class="deploy-tag">1 Pi</span><span class="deploy-tag">26 TOPS</span><span class="deploy-tag">4 cameras</span>
+    </div>
+    <div class="deploy-card">
+      <h3>Fleet Mode</h3>
+      <p>Multiple Hailo-equipped Pis connected via WireGuard mesh. Centralized management,
+      distributed processing. Scale to hundreds of cameras across multiple sites.</p>
+      <span class="deploy-tag">N Pis</span><span class="deploy-tag">N x 26 TOPS</span><span class="deploy-tag">unlimited cameras</span>
+    </div>
+    <div class="deploy-card">
+      <h3>Hybrid</h3>
+      <p>Edge processing on Pis with aggregated analytics on a central server. Best of both
+      worlds: low latency at the edge, unified dashboards in the control room.</p>
+      <span class="deploy-tag">Pi + server</span><span class="deploy-tag">Grafana</span><span class="deploy-tag">PostgreSQL</span>
+    </div>
+    <div class="deploy-card">
+      <h3>Air-Gapped</h3>
+      <p>No internet required. Fully offline operation with local model storage, local
+      event logging, and local alerting via MQTT or direct GPIO. For classified or
+      high-security environments.</p>
+      <span class="deploy-tag">offline</span><span class="deploy-tag">ITAR</span><span class="deploy-tag">classified</span>
+    </div>
+  </div>
+</section>
+
+<section style="padding:6rem 2rem;">
+  <div class="container">
+    <div class="hw-grid">
+      <div class="code-block">
+        <div class="code-header"><div class="code-dot"></div><div class="code-dot"></div><div class="code-dot"></div></div>
+        <div class="code-body">
+<pre><span class="cc"># Hailo Vision — deploy a detection pipeline</span>
+
+<span class="cc"># Install</span>
+<span class="cf">pip install</span> <span class="cs">hailo-vision</span>
+
+<span class="cc"># Configure camera</span>
+<span class="cf">hailo-vision</span> config add-camera \
+  <span class="cn">--name</span> <span class="cs">"front-door"</span> \
+  <span class="cn">--url</span> <span class="cs">"rtsp://192.168.4.10/stream1"</span> \
+  <span class="cn">--model</span> <span class="cs">"yolov8s"</span> \
+  <span class="cn">--fps</span> <span class="cn">30</span>
+
+<span class="cc"># Add detection zone</span>
+<span class="cf">hailo-vision</span> zone add \
+  <span class="cn">--camera</span> <span class="cs">"front-door"</span> \
+  <span class="cn">--name</span> <span class="cs">"entrance"</span> \
+  <span class="cn">--polygon</span> <span class="cs">"100,100 500,100 500,400 100,400"</span>
+
+<span class="cc"># Set alert rule</span>
+<span class="cf">hailo-vision</span> alert add \
+  <span class="cn">--zone</span> <span class="cs">"entrance"</span> \
+  <span class="cn">--class</span> <span class="cs">"person"</span> \
+  <span class="cn">--after</span> <span class="cs">"22:00"</span> \
+  <span class="cn">--action</span> <span class="cs">"webhook:https://roadflow.local/alert"</span>
+
+<span class="cc"># Start pipeline</span>
+<span class="cf">hailo-vision</span> start <span class="cn">--daemon</span></pre>
+        </div>
+      </div>
+      <div>
+        <h2 style="font-size:2.5rem;font-weight:700;margin-bottom:1.25rem;">
+          Deploy in<br><span class="gt">Minutes</span>
+        </h2>
+        <p style="color:var(--text-secondary);font-size:1.05rem;line-height:1.7;margin-bottom:1.5rem;">
+          The Hailo Vision CLI makes it simple to configure cameras, define detection zones,
+          set alert rules, and start processing. No YAML manifests. No container orchestration.
+          Just commands that do what they say.
+        </p>
+        <p style="color:var(--text-secondary);font-size:1.05rem;line-height:1.7;">
+          Models are pre-compiled for Hailo-8 and cached locally. First run downloads the
+          model once. After that, everything runs offline. Update models with a single
+          command when better versions are available.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="cta" class="cta-section">
+  <h2>See Everything.<br><span class="gt">Share Nothing.</span></h2>
+  <p>Computer vision that respects privacy by design. All processing on your hardware.
+  All data under your control. All the time.</p>
+  <div class="hero-actions">
+    <a href="#" class="btn-primary">Deploy Hailo Vision</a>
+    <a href="https://github.com/BlackRoad-Hardware/hailo-vision" class="btn-secondary">View on GitHub</a>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div style="display:flex;align-items:center;gap:.75rem;">
+        <div class="nav-logo">HV</div><span class="nav-title">Hailo Vision</span>
+      </div>
+      <p>Edge AI computer vision powered by Hailo-8 accelerators. Built by BlackRoad Hardware.
+      52 TOPS of on-device inference. No cloud. No latency. No compromise. Pave Tomorrow.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Product</h4>
+      <a href="#features">Features</a><a href="#hardware">Hardware</a><a href="#models">Models</a><a href="#">Docs</a><a href="#">Changelog</a>
+    </div>
+    <div class="footer-col">
+      <h4>Resources</h4>
+      <a href="#">Quick Start</a><a href="#">Model Zoo</a><a href="#">Pipeline SDK</a><a href="#">Community</a>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <a href="https://blackroad.io">BlackRoad OS</a><a href="https://github.com/BlackRoad-Hardware">BlackRoad Hardware</a><a href="#">Privacy</a><a href="#">Contact</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 BlackRoad OS, Inc. All rights reserved.</span>
+    <span>hailo.blackroad.io</span>
+  </div>
+</footer>
+</body>
+</html>
